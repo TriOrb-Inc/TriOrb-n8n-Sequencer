@@ -10,9 +10,11 @@
 ## 想定する環境変数
 
 ```
-AMR_BASE_URL=http://<AMRコントローラのIP>:<PORT>
+AMR_API_PORT=8080
 AMR_API_KEY=<必要に応じて設定>
 ```
+
+> AMRのIPアドレスは複数台になる前提のため、n8nのダッシュボードで対象機器を追加して運用します。
 
 ## n8nワークフロー例（概要）
 
@@ -27,7 +29,7 @@ AMR_API_KEY=<必要に応じて設定>
 ## HTTP Request ノード例
 
 - **Method**: `POST`
-- **URL**: `${AMR_BASE_URL}/api/v1/tasks`
+- **URL**: `http://<AMRのIP>:${AMR_API_PORT}/api/v1/tasks`
 - **Headers**:
   - `Content-Type: application/json`
   - `Authorization: Bearer ${AMR_API_KEY}`（必要な場合）
