@@ -1,0 +1,2078 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TriOrb Robot controler",
+    "description": "\n## TriOrb BASEを制御するためのWeb API\n    ",
+    "contact": {
+      "name": "TriOrb Inc.",
+      "url": "https://www.triorb.co.jp/",
+      "email": "info@triorb.co.jp"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.2.3"
+  },
+  "paths": {
+    "/system/version": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get system version info",
+        "description": "現在のTriOrbシステムの各モジュールのバージョンを取得します。\nReturns: drive, core, pico のバージョン情報を含むJSON。",
+        "operationId": "get_version_system_version_get",
+        "responses": {
+          "200": {
+            "description": "現在のシステムバージョンを返します",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/error": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get current error list",
+        "description": "システムに記録された現在のエラーメッセージの一覧を返します。",
+        "operationId": "get_error_system_error_get",
+        "responses": {
+          "200": {
+            "description": "現在のエラーリストを返します",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/warning": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get current warning list",
+        "description": "システムに記録された現在の警告メッセージの一覧を返します。",
+        "operationId": "get_warning_system_warning_get",
+        "responses": {
+          "200": {
+            "description": "現在の警告リストを返します",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarningListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/error/reset": {
+      "post": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Reset the system error list",
+        "operationId": "reset_error_list_system_error_reset_post",
+        "responses": {
+          "200": {
+            "description": "正常にエラーリストをリセットしました",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__system__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "内部エラーが発生しました（MQTTパブリッシュ失敗など）"
+          }
+        }
+      }
+    },
+    "/system/reboot/": {
+      "post": {
+        "tags": [
+          "system"
+        ],
+        "summary": "reboot the system",
+        "description": "ホスト上の FastAPI API に再起動を委譲",
+        "operationId": "delegate_reboot_system_reboot__post",
+        "responses": {
+          "200": {
+            "description": "成功（標準出力を返す）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__system__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "subprocessが正常に終了しなかった場合や例外が発生した場合（標準エラー出力または例外の内容を返す）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__system__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/shutdown/": {
+      "post": {
+        "tags": [
+          "system"
+        ],
+        "summary": "shutdown the system",
+        "description": "ホスト側のAPIに委譲して、システムをシャットダウンします。",
+        "operationId": "delegate_shutdown_system_shutdown__post",
+        "responses": {
+          "200": {
+            "description": "成功（標準出力を返す）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__system__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "subprocessが正常に終了しなかった場合や例外が発生した場合（標準エラー出力または例外の内容を返す）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__system__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/network/connected_wifi": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get WiFi connection info",
+        "description": "現在接続中のWiFi情報を返します。\nReturns: SSID、BSSID、信号強度などの情報一覧。",
+        "operationId": "get_connected_wifi_system_network_connected_wifi_get",
+        "responses": {
+          "200": {
+            "description": "現在のWiFi接続情報を返します",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/network/ip_address": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get IP address info",
+        "description": "現在の有効なネットワーク接続インターフェースとそのIPアドレス情報を返します。\nReturns: インターフェース名、IP、状態など。",
+        "operationId": "get_ip_address_system_network_ip_address_get",
+        "responses": {
+          "200": {
+            "description": "現在のIPアドレス情報を返します",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Health check API",
+        "description": "Robot-Controllerの稼働状態を確認します。",
+        "operationId": "health_check_system_health_get",
+        "responses": {
+          "200": {
+            "description": "サービスの稼働状態を返します",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status/robot/status": {
+      "get": {
+        "tags": [
+          "status"
+        ],
+        "summary": "Get Robot Status",
+        "description": "### API endpoint to check the robot status.\nRetrieves the current status of the robot.<br>\nReturns the RobotStatus message in JSON format.\n- 200: Successful Response\n- 500: Exception (Error details)\n#### Returns:\nRobotStatusResponse: JSON representation of RobotStatus or error details. ROS Interface:\n```\n#==ロボットの状態==\nstd_msgs/Header header  # timestamp\nfloat32 voltage         # main power supply voltage\nuint16 btns             # Remote control operation status (bit flag)\nuint16 state            # Robot operation state (bit flag)\nuint16 error            # Error status of the robot (bit flag)\nfloat32 battery         # Battery level (0.0 - 1.0)\nstring collab_id        # collab group id (empty: no group)\nbool manual_mode        # enable manual drive\nbool auto_mode          # enable auto drive\n\n#---Remote control operation status (bit flag)---\n# 0x8000: Remote control Y button\n# 0x4000: Remote control B button\n# 0x2000: Remote control A button\n# 0x1000: Remote control X button\n\n#---Robot operation state (bit flag)---\n# 0x8000: Motor is being excited\n# 0x4000: Accepting move instruction (not implemented)\n# 0x2000: Moving\n# 0x1000: Self-position recognition in progress\n# 0x0800: Generating map (not implemented)\n# 0x0400: During anti-collision control (option)\n# 0x0200: Position control move completed\n# 0x0100: Stopped due to anti-collision control (option)\n# 0x0010: Emergency stop is working\n# 0x0001: Status obtained successfully\n\n#---Error status of the robot (bit flag)---\n# 0x8000: Motor connection error\n# 0x4000: IMU and distance sensor connection error\n# 0x2000: Camera connection error\n# 0x1000: Main power supply voltage abnormal\n# 0x0001: Control ECU connection error\n```\n#### Example Response:\n```json\n{\n    \"header\": {\n        \"stamp\": {\n        \"sec\": 1761095904,\n        \"nanosec\": 873762902\n        },\n        \"frame_id\": \"robot\"\n    },\n    \"voltage\": 24.1,\n    \"btns\": 0,\n    \"state\": 4096,\n    \"error\": 0,\n    \"battery\": 0.9,\n    \"collab_id\": \"\",\n    \"manual_mode\": false,\n    \"auto_mode\": false\n}\n```",
+        "operationId": "group_get_status_robot_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RobotStatusResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Exception (Error details)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response 500 Group Get Status Robot Status Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/robot/position": {
+      "get": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Get robot position",
+        "description": "現在のロボットの位置（X, Y, 角度）を取得します。\nReturns: ロボット位置を含むJSON。",
+        "operationId": "get_robot_position_vslam_robot_position_get",
+        "responses": {
+          "200": {
+            "description": "Robot position retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RobotPositionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/map/list": {
+      "get": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Get map list",
+        "description": "地図ファイルのリストを取得するAPIエンドポイント",
+        "operationId": "get_map_list_vslam_map_list_get",
+        "responses": {
+          "200": {
+            "description": "Map list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/map/fix": {
+      "post": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Fix map",
+        "operationId": "fix_map_vslam_map_fix_post",
+        "responses": {
+          "200": {
+            "description": "Map fixed successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/map/fix-status": {
+      "get": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Get map fix status",
+        "description": "`mapping_mode` の状態を返します。\n\n    - `0`: 地図固定モード（Mapping mode off）\n    - `1`: 地図未固定（Mapping mode on）\n    - `-1`: 未定義または無効な状態",
+        "operationId": "get_map_fix_status_vslam_map_fix_status_get",
+        "responses": {
+          "200": {
+            "description": "Map fix status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/map/current-map": {
+      "get": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Get current executing vslam map",
+        "description": "現在実行中のVSLAMマップを取得します。",
+        "operationId": "get_current_executing_vslam_map_vslam_map_current_map_get",
+        "responses": {
+          "200": {
+            "description": "Current executing vslam map retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslammap/vslam-load": {
+      "post": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "load vslam map from file",
+        "description": "VSLAMマップをファイルから読み込みます。",
+        "operationId": "load_vslam_map_vslammap_vslam_load_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VSLAMMapRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "VSLAM map loaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/map/init": {
+      "post": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Initialize VSLAM map",
+        "description": "VSLAMマップを初期化します。",
+        "operationId": "initialize_vslam_map_vslam_map_init_post",
+        "responses": {
+          "200": {
+            "description": "VSLAM map initialized successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/camera/active": {
+      "get": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Get currently active camera",
+        "description": "現在アクティブなカメラを取得します。",
+        "operationId": "get_active_camera_vslam_camera_active_get",
+        "responses": {
+          "200": {
+            "description": "Currently active camera retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vslam/camera/switch": {
+      "post": {
+        "tags": [
+          "vslam"
+        ],
+        "summary": "Switch active camera",
+        "description": "アクティブなカメラを切り替えます。",
+        "operationId": "switch_active_camera_vslam_camera_switch_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CameraSwitchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Active camera switched successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/drive/stop": {
+      "post": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Stop  driving",
+        "description": "### Post endpoint to stop driving (stop navigation).\nTerminates movement and navigation. /drive/result will return a failure.\n- 200: drive stopped successfully\n- 500: Exception (Error details)\n#### Returns:\nJSONResponse: Stop completion message or error details.",
+        "operationId": "drive_stop_navigation_drive_stop_post",
+        "responses": {
+          "200": {
+            "description": "drive stopped successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__navigation__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Exception (Error details)"
+          }
+        }
+      }
+    },
+    "/navigation/drive/pause": {
+      "post": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Pause driving",
+        "description": "自律移動を一時停止するコマンドを送信します。\n\nReturns:\n    JSONResponse: 一時停止完了メッセージ。",
+        "operationId": "drive_pause_navigation_drive_pause_post",
+        "responses": {
+          "200": {
+            "description": "drive paused successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__navigation__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/drive/restart": {
+      "post": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Restart driving",
+        "description": "### Post endpoint to restart driving.\nSends a command to restart the robot's driving functionality.\n- 200: drive restarted successfully\n- 500: Exception (Error details)\n#### Returns:\nJSONResponse: Restart completion message or error details.",
+        "operationId": "drive_restart_navigation_drive_restart_post",
+        "responses": {
+          "200": {
+            "description": "drive restarted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__navigation__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Exception (Error details)"
+          }
+        }
+      }
+    },
+    "/navigation/drive/absolute_pose": {
+      "post": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Set absolute pose",
+        "description": "ロボットの絶対位置姿勢（Pose）を設定します。\n\nリクエスト形式:\n    {\n        \"pos\": {\n            \"position\": {\"x\": 1.0, \"y\": 0.0, \"deg\": 90.0},\n            \"speed\": {\"acc\": 1000, \"dec\": 1000, \"xy\": 0.3, \"w\": 1.57}\n        },\n        \"setting\": {\n            \"tx\": 0.05, \"ty\": 0.05, \"tr\": 1,\n            \"force\": 128, \"gain_no\": 0,\n            \"disable_camera_idx\": [0, 2]\n        }\n    }\n\nReturns:\n    JSONResponse: 設定完了メッセージ。",
+        "operationId": "drive_absolute_pose_navigation_drive_absolute_pose_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReqTriorbSetPos3"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Absolute pose set successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__navigation__Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/drive/set_pos": {
+      "post": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Set absolute position",
+        "description": "### ロボットの目標位置を設定します。\n\nリクエスト形式:\n```\n    {\n        \"pos\": {\n            \"position\": {\"x\": 1.0, \"y\": 0.0, \"deg\": 90.0},\n            \"speed\": {\"acc\": 1000, \"dec\": 1000, \"xy\": 0.3, \"w\": 1.57}\n        },\n        \"setting\": {\n            \"tx\": 0.05, \"ty\": 0.05, \"tr\": 1,\n            \"force\": 160, \"gain_no\": 0,\n            \"disable_camera_idx\": [0, 2]\n        }\n    }\n```\n#### Returns:\nJSONResponse: 位置設定コマンド送信結果またはエラー詳細。",
+        "operationId": "drive_set_pos_navigation_drive_set_pos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReqTriorbSetPos3"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Position command sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Exception (Error details)"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/drive/result": {
+      "get": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Get drive result",
+        "description": "### API endpoint to get the latest drive result.\nRetrieves the latest drive result message.<br>\nReturns the TriorbRunResult message in JSON format.\n- 200: Successful Response\n- 500: Exception (Error details)\n#### Returns:\nJSONResponse: JSON representation of TriorbRunResult or error details.\n#### Example Response:\n    ```json\n    {\n        \"success\": true,\n        \"info\": 0, \n        \"position\": {\n            \"x\": 1.0,\n            \"y\": 0.0,\n            \"deg\": 90.0\n        }\n    }\n    ```\n    - info値（`NAVIGATE_RESULT`に対応）:\n    - 0: TIMEOUT_FAILED（タイムアウト）, 1: HALF_TIMEOUT, 2: TRANSFORM_FAILED, 3: NO_CHANGE_TIMESTAMP\n    - 4: FORCE_STOP（/drive/stopなどで強制停止）, 5: NAVIGATION_FAILED, 6: NAVIGATION_SUCCESS, 7: PROGRESS\n    - 8: FORCE_SUCCESS（force success指示）, 9: LOST_FAILED（ロスト判定）, 255: REJECT（移動中に来た指示や不正引数を拒否）\n            \n    # drive resultが未到着の場合\n    ```json\n    {\n        \"message\": \"No drive result available yet.\"\n    }\n    ```",
+        "operationId": "drive_result_navigation_drive_result_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response 200 Drive Result Navigation Drive Result Get"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Exception (Error details)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response 500 Drive Result Navigation Drive Result Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/task/list": {
+      "get": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Get existing task definitions",
+        "description": "現在登録されているタスクリストを取得します。\nReturns: タスクリストとメッセージ。",
+        "operationId": "get_task_list_navigation_task_list_get",
+        "responses": {
+          "200": {
+            "description": "List of existing task definitions",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/task/execute": {
+      "post": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Execute a task",
+        "description": "指定されたタスクを実行します。\nReturns: 実行成功または失敗のメッセージ。",
+        "operationId": "execute_task_navigation_task_execute_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskExecutionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Task executed successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/task/status": {
+      "get": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Get current task status",
+        "description": "現在実行中のタスクステータスを取得します。\nReturns: タスクファイル名、データ、状態情報。\nnav_state: \n    IDLE = 0\n    NAVIGATING = 1\n    PAUSED = 2",
+        "operationId": "get_task_status_navigation_task_status_get",
+        "responses": {
+          "200": {
+            "description": "Current task status",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/navigation/task/result": {
+      "get": {
+        "tags": [
+          "navigation"
+        ],
+        "summary": "Get navigation result",
+        "description": "### API endpoint to get the latest navigation result.\nRetrieves the latest navigation result message.<br>\nReturns the Nav Result message in JSON format.\n- 200: Successful Response\n- 500: Exception (Error details)\n#### Returns:\nJSONResponse: JSON representation of Nav Result or error details.\n#### Example Response:\n```json\n{\n    \"result\": \"SUCCESS\",\n    \"message\": \"Navigation completed successfully.\",\n    \"taskname\": \"example_task\"\n}\n```",
+        "operationId": "nav_result_navigation_task_result_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response 200 Nav Result Navigation Task Result Get"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Exception (Error details)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "title": "Response 500 Nav Result Navigation Task Result Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control/motor/sleep": {
+      "post": {
+        "tags": [
+          "control"
+        ],
+        "summary": "Set motor sleep mode",
+        "description": "モーターをスリープ状態にします。\nReturns: 成功メッセージ。",
+        "operationId": "set_motor_sleep_control_motor_sleep_post",
+        "responses": {
+          "200": {
+            "description": "Motor sleep mode set successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__control__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control/motor/wakeup": {
+      "post": {
+        "tags": [
+          "control"
+        ],
+        "summary": "Wake up motors",
+        "description": "モーターをスリープから復帰させます。\nReturns: 成功メッセージ。",
+        "operationId": "wakeup_motors_control_motor_wakeup_post",
+        "responses": {
+          "200": {
+            "description": "Motors woken up successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__control__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control/drive/run_pos": {
+      "post": {
+        "tags": [
+          "control"
+        ],
+        "summary": "Control robot's relative pose",
+        "description": "### Post endpoint to control the robot's relative pose.\nMakes the robot move to the specified relative position.\n- 200: Command sent successfully\n- 500: Exception (Error details)",
+        "operationId": "control_relative_pose_control_drive_run_pos_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReqTriorbRunPos3"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Relative pose control command sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to send relative pose control command"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control/drive/run_vel": {
+      "post": {
+        "tags": [
+          "control"
+        ],
+        "summary": "Control robot's relative velocity",
+        "description": "ロボットの相対速度制御を行うAPIエンドポイントです。\n    - `vx`: X軸方向の速度\n    - `vy`: Y軸方向の速度\n    - `vw`: 回転速度(degrees/s)\n    - `drivetime`: 制御を行う時間（ミリ秒単位）",
+        "operationId": "control_relative_velocity_control_drive_run_vel_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RelativeVelocityRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Relative velocity control command sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/control/drive/run_pos/result": {
+      "get": {
+        "tags": [
+          "control"
+        ],
+        "summary": "Get relative pose control result",
+        "description": "### Get endpoint to retrieve the result of relative pose control.\nRetrieves the result of the relative pose control command.\n- 200: Successful retrieval of result\n- 500: Exception (Error details)\n#### Returns:\nJSONResponse: Result of relative pose control or error details.",
+        "operationId": "get_relative_pose_result_control_drive_run_pos_result_get",
+        "responses": {
+          "200": {
+            "description": "Relative pose control result retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to retrieve relative pose control result"
+          }
+        }
+      }
+    },
+    "/collab/group_get": {
+      "get": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "group_get",
+        "description": "このロボットの協調グループ存在を確認するAPIエンドポイント",
+        "operationId": "group_get_collab_group_get_get",
+        "responses": {
+          "200": {
+            "description": "成功（グループ名もしくはNone）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/group_rm": {
+      "get": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "group_rm",
+        "description": "このロボットの協調グループ削除を行うAPIエンドポイント",
+        "operationId": "group_rm_collab_group_rm_get",
+        "responses": {
+          "200": {
+            "description": "成功（グループ削除結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/group_create": {
+      "post": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "group_create",
+        "description": "協調グループの作成を行うAPIエンドポイント",
+        "operationId": "group_create_collab_group_create_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_group_create_collab_group_create_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "成功（グループ作成の結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/group_bind": {
+      "post": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "group_bind",
+        "description": "協調グループのバインドを行うAPIエンドポイント\nJSON.stringifyで呼び出す場合、robotsは配列として送信してください。\n例:\n{\n    \"group_name\": \"collab01\",\n    \"master\": \"192.168.0.1\",\n    \"robots\": [\n        {\"ip\": \"192.168.0.2\", \"dx\": 0.0, \"dy\": 0.0, \"dw\": 0.0},\n        {\"ip\": \"192.168.0.3\", \"dx\": 1.0, \"dy\": 0.0, \"dw\": 90.0}\n    ]\n}",
+        "operationId": "group_bind_collab_group_bind_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_group_bind_collab_group_bind_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "成功（グループ作成の結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/group_create_and_bind": {
+      "post": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "group_create_and_bind",
+        "description": "協調グループの作成とバインドを行うAPIエンドポイント\nJSON.stringifyで呼び出す場合、robotsは配列として送信してください。\n例:\n{\n    \"group_name\": \"collab01\",\n    \"master\": \"192.168.0.1\",\n    \"robots\": [\n        {\"ip\": \"192.168.0.2\", \"dx\": 0.0, \"dy\": 0.0, \"dw\": 0.0},\n        {\"ip\": \"192.168.0.3\", \"dx\": 1.0, \"dy\": 0.0, \"dw\": 90.0}\n    ]\n}",
+        "operationId": "group_create_and_bind_collab_group_create_and_bind_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_group_create_and_bind_collab_group_create_and_bind_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "成功（グループ作成の結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/group_remove": {
+      "post": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "group_remove",
+        "description": "協調グループの削除を行うAPIエンドポイント",
+        "operationId": "group_remove_collab_group_remove_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_group_remove_collab_group_remove_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "成功（グループ削除の結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/run_lifter": {
+      "post": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "Collaborative Lift Control",
+        "description": "### 協調グループ全体のリフト制御を行うAPIエンドポイント．\nactionパラメータで指定されたアクションを実行します．<br>\n例:\n```\n{\n    \"action\": \"up\"\n}\n```\n可能なアクション:\n- \"up\": リフトを上昇させる\n- \"down\": リフトを下降させる\n- \"stop\": リフトの動作を停止する\n- \"middle\": リフトを中間点に移動させる\n\n返却されるJSONには，API呼び出しの結果が含まれます．<br>\n例:\n```\n{\n    \"message\": \"Collaborative lift action sent: up\"\n}\n```\n例外が発生した場合，500エラーとともにエラーメッセージが返されます．<br>\n例:\n```\n{\n    \"message\": \"Traceback message...\"\n}\n```",
+        "operationId": "run_lifter_collab_run_lifter_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "title": "Action",
+                "description": "リフト制御アクション（up: 上昇, down: 下降, stop: 停止, middle: 中間点）",
+                "default": "stop"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功（リフト制御コマンド送信結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/collab/lifter_result": {
+      "get": {
+        "tags": [
+          "collab"
+        ],
+        "summary": "Get Collaborative Lift Result",
+        "description": "### 協調グループ全体のリフト制御結果を取得するAPIエンドポイント．\n返却されるJSONには，最新のリフト制御結果が含まれます．<br>\n例:\n```\n{\n    \"message\": \"No result available/success/failed\"\n}\n```\n例外が発生した場合，500エラーとともにエラーメッセージが返されます．<br>\n例:\n```\n{\n    \"message\": \"Traceback message...\"\n}\n```",
+        "operationId": "lifter_result_collab_lifter_result_get",
+        "responses": {
+          "200": {
+            "description": "成功（リフト制御結果）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "例外（エラーの内容）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__collab__Message"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_group_bind_collab_group_bind_post": {
+        "properties": {
+          "group_name": {
+            "type": "string",
+            "title": "Group Name",
+            "description": "協調グループ名"
+          },
+          "master": {
+            "type": "string",
+            "title": "Master",
+            "description": "協調グループのマスターのIPアドレス"
+          },
+          "robots": {
+            "items": {
+              "$ref": "#/components/schemas/CollabBind"
+            },
+            "type": "array",
+            "title": "Robots",
+            "description": "協調グループに参加するロボットのIPアドレスとオフセット情報のリスト"
+          }
+        },
+        "type": "object",
+        "required": [
+          "group_name",
+          "master",
+          "robots"
+        ],
+        "title": "Body_group_bind_collab_group_bind_post"
+      },
+      "Body_group_create_and_bind_collab_group_create_and_bind_post": {
+        "properties": {
+          "group_name": {
+            "type": "string",
+            "title": "Group Name",
+            "description": "協調グループ名"
+          },
+          "master": {
+            "type": "string",
+            "title": "Master",
+            "description": "協調グループのマスターのIPアドレス"
+          },
+          "robots": {
+            "items": {
+              "$ref": "#/components/schemas/CollabBind"
+            },
+            "type": "array",
+            "title": "Robots",
+            "description": "協調グループに参加するロボットのIPアドレスとオフセット情報のリスト"
+          }
+        },
+        "type": "object",
+        "required": [
+          "group_name",
+          "master",
+          "robots"
+        ],
+        "title": "Body_group_create_and_bind_collab_group_create_and_bind_post"
+      },
+      "Body_group_create_collab_group_create_post": {
+        "properties": {
+          "group_name": {
+            "type": "string",
+            "title": "Group Name",
+            "description": "協調グループ名"
+          },
+          "robots": {
+            "type": "string",
+            "title": "Robots",
+            "description": "協調グループに参加するロボットのIPアドレスのリスト（カンマ区切り）"
+          },
+          "master": {
+            "type": "string",
+            "title": "Master",
+            "description": "協調グループのマスターのIPアドレス",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "group_name",
+          "robots"
+        ],
+        "title": "Body_group_create_collab_group_create_post"
+      },
+      "Body_group_remove_collab_group_remove_post": {
+        "properties": {
+          "group_name": {
+            "type": "string",
+            "title": "Group Name",
+            "description": "協調グループ名（未使用）",
+            "default": ""
+          },
+          "robots": {
+            "type": "string",
+            "title": "Robots",
+            "description": "協調グループから脱退削除するロボットのIPアドレスリスト（カンマ区切り）"
+          }
+        },
+        "type": "object",
+        "required": [
+          "robots"
+        ],
+        "title": "Body_group_remove_collab_group_remove_post"
+      },
+      "CameraSwitchRequest": {
+        "properties": {
+          "cameraSwitchValue": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Cameraswitchvalue",
+            "description": "Camera Index to be excluded from robot pose estimation)",
+            "default": [
+              1,
+              1,
+              1,
+              1
+            ]
+          }
+        },
+        "type": "object",
+        "title": "CameraSwitchRequest"
+      },
+      "CollabBind": {
+        "properties": {
+          "ip": {
+            "type": "string",
+            "title": "Ip",
+            "description": "IPアドレス"
+          },
+          "dx": {
+            "type": "number",
+            "title": "Dx",
+            "description": "ロボットから見た協調中心のX軸オフセット[m]",
+            "default": 0.0
+          },
+          "dy": {
+            "type": "number",
+            "title": "Dy",
+            "description": "ロボットから見た協調中心のY軸オフセット[m]",
+            "default": 0.0
+          },
+          "dw": {
+            "type": "number",
+            "title": "Dw",
+            "description": "ロボットから見た協調中心のYaw角度オフセット[deg]",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "ip"
+        ],
+        "title": "CollabBind"
+      },
+      "ErrorListResponse": {
+        "properties": {
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Errors",
+            "description": "List of system error messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "title": "ErrorListResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Header": {
+        "properties": {
+          "stamp": {
+            "$ref": "#/components/schemas/TimeStamp",
+            "description": "Timestamp of the message"
+          },
+          "frame_id": {
+            "type": "string",
+            "title": "Frame Id",
+            "description": "Coordinate frame ID"
+          }
+        },
+        "type": "object",
+        "required": [
+          "stamp",
+          "frame_id"
+        ],
+        "title": "Header",
+        "description": "std_msgs/Header 相当."
+      },
+      "HealthCheckResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Service Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "HealthCheckResponse"
+      },
+      "RelativeVelocityRequest": {
+        "properties": {
+          "drivetime": {
+            "type": "integer",
+            "title": "Drivetime",
+            "description": "Time to drive in seconds",
+            "default": 1
+          },
+          "speed": {
+            "$ref": "#/components/schemas/Speed"
+          },
+          "velocity": {
+            "$ref": "#/components/schemas/Velocity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "speed",
+          "velocity"
+        ],
+        "title": "RelativeVelocityRequest"
+      },
+      "ReqTriorbRunPos3": {
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/routers__control__Position",
+            "description": "Position information"
+          },
+          "speed": {
+            "$ref": "#/components/schemas/Speed",
+            "description": "Speed information"
+          }
+        },
+        "type": "object",
+        "required": [
+          "position",
+          "speed"
+        ],
+        "title": "ReqTriorbRunPos3"
+      },
+      "ReqTriorbSetPos3": {
+        "properties": {
+          "pos": {
+            "$ref": "#/components/schemas/TriorbRunPos3",
+            "description": "Run position information"
+          },
+          "setting": {
+            "$ref": "#/components/schemas/TriorbRunSetting",
+            "description": "Run setting information"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pos",
+          "setting"
+        ],
+        "title": "ReqTriorbSetPos3"
+      },
+      "RobotPoseModel": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "title": "Y"
+          },
+          "theta_deg": {
+            "type": "number",
+            "title": "Theta Deg"
+          }
+        },
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "theta_deg"
+        ],
+        "title": "RobotPoseModel"
+      },
+      "RobotPositionResponse": {
+        "properties": {
+          "robot_position": {
+            "$ref": "#/components/schemas/RobotPoseModel"
+          }
+        },
+        "type": "object",
+        "required": [
+          "robot_position"
+        ],
+        "title": "RobotPositionResponse"
+      },
+      "RobotStatusResponse": {
+        "properties": {
+          "header": {
+            "$ref": "#/components/schemas/Header",
+            "description": "ヘッダー情報 (timestamp, frame id)"
+          },
+          "voltage": {
+            "type": "number",
+            "title": "Voltage",
+            "description": "main power supply voltage"
+          },
+          "btns": {
+            "type": "integer",
+            "title": "Btns",
+            "description": "Remote control operation status (bit flag)"
+          },
+          "state": {
+            "type": "integer",
+            "title": "State",
+            "description": "Robot operation state (bit flag)"
+          },
+          "error": {
+            "type": "integer",
+            "title": "Error",
+            "description": "Error status of the robot (bit flag)"
+          },
+          "battery": {
+            "type": "number",
+            "title": "Battery",
+            "description": "Battery level (0.0 - 1.0)"
+          },
+          "collab_id": {
+            "type": "string",
+            "title": "Collab Id",
+            "description": "collab group id (empty: no group)"
+          },
+          "manual_mode": {
+            "type": "boolean",
+            "title": "Manual Mode",
+            "description": "enable manual drive"
+          },
+          "auto_mode": {
+            "type": "boolean",
+            "title": "Auto Mode",
+            "description": "enable auto drive"
+          }
+        },
+        "type": "object",
+        "required": [
+          "header",
+          "voltage",
+          "btns",
+          "state",
+          "error",
+          "battery",
+          "collab_id",
+          "manual_mode",
+          "auto_mode"
+        ],
+        "title": "RobotStatusResponse",
+        "description": "/robot/status 応答モデル."
+      },
+      "Speed": {
+        "properties": {
+          "acc": {
+            "type": "integer",
+            "title": "Acc",
+            "description": "Acceleration time [ms]",
+            "default": 1000
+          },
+          "dec": {
+            "type": "integer",
+            "title": "Dec",
+            "description": "Deceleration time [ms]",
+            "default": 1000
+          },
+          "xy": {
+            "type": "number",
+            "title": "Xy",
+            "description": "Translation velocity [m/s]",
+            "default": 0.3
+          },
+          "w": {
+            "type": "number",
+            "title": "W",
+            "description": "Rotation speed [rad/s]",
+            "default": 1.57
+          }
+        },
+        "type": "object",
+        "title": "Speed"
+      },
+      "TaskExecutionRequest": {
+        "properties": {
+          "task_name": {
+            "type": "string",
+            "title": "Task Name",
+            "description": "Name of the task to execute"
+          },
+          "ratio_speed": {
+            "type": "number",
+            "title": "Ratio Speed",
+            "description": "Speed ratio for the task execution",
+            "default": 1.0
+          },
+          "bias_accuracy_xy": {
+            "type": "number",
+            "title": "Bias Accuracy Xy",
+            "description": "XY accuracy bias for the task execution",
+            "default": 0.0
+          },
+          "bias_accuracy_deg": {
+            "type": "number",
+            "title": "Bias Accuracy Deg",
+            "description": "Angular accuracy bias for the task execution",
+            "default": 0.0
+          },
+          "execute_count": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Execute Count",
+            "description": "Number of times to execute the task (must be at least 1)",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_name"
+        ],
+        "title": "TaskExecutionRequest"
+      },
+      "TimeStamp": {
+        "properties": {
+          "sec": {
+            "type": "integer",
+            "title": "Sec",
+            "description": "Seconds since epoch"
+          },
+          "nanosec": {
+            "type": "integer",
+            "title": "Nanosec",
+            "description": "Nanoseconds component"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sec",
+          "nanosec"
+        ],
+        "title": "TimeStamp",
+        "description": "ROS2 builtin_interfaces/Time 相当."
+      },
+      "TriorbRunPos3": {
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/routers__navigation__Position",
+            "description": "Position information"
+          },
+          "speed": {
+            "$ref": "#/components/schemas/Speed",
+            "description": "Speed information"
+          }
+        },
+        "type": "object",
+        "required": [
+          "position",
+          "speed"
+        ],
+        "title": "TriorbRunPos3"
+      },
+      "TriorbRunSetting": {
+        "properties": {
+          "tx": {
+            "type": "number",
+            "title": "Tx",
+            "description": "Target error in X-axis direction [±m]",
+            "default": 0.05
+          },
+          "ty": {
+            "type": "number",
+            "title": "Ty",
+            "description": "Target error in Y-axis direction [±m]",
+            "default": 0.05
+          },
+          "tr": {
+            "type": "number",
+            "title": "Tr",
+            "description": "Target error in rotation [±rad]",
+            "default": 1
+          },
+          "force": {
+            "type": "integer",
+            "title": "Force",
+            "description": "Target force level",
+            "default": 128
+          },
+          "gain_no": {
+            "type": "integer",
+            "title": "Gain No",
+            "description": "Number of gain type (not set:0, basic:1)",
+            "default": 0
+          },
+          "disable_camera_idx": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Disable Camera Idx",
+            "description": "Camera Index to be excluded from robot pose estimation)",
+            "default": []
+          }
+        },
+        "type": "object",
+        "title": "TriorbRunSetting"
+      },
+      "VSLAMMapRequest": {
+        "properties": {
+          "map_name": {
+            "type": "string",
+            "title": "Map Name",
+            "description": "Name of the VSLAM map to load"
+          }
+        },
+        "type": "object",
+        "required": [
+          "map_name"
+        ],
+        "title": "VSLAMMapRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Velocity": {
+        "properties": {
+          "vx": {
+            "type": "number",
+            "title": "Vx",
+            "description": " Velocity vector along X axis [m/s]",
+            "default": 0.0
+          },
+          "vy": {
+            "type": "number",
+            "title": "Vy",
+            "description": "Velocity vector along Y axis [m/s]",
+            "default": 0.0
+          },
+          "vw": {
+            "type": "number",
+            "title": "Vw",
+            "description": "Rotation velocity vector around the Z axis [rad/s]",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "Velocity"
+      },
+      "VersionResponse": {
+        "properties": {
+          "drive": {
+            "type": "string",
+            "title": "Drive",
+            "description": "Drive component version"
+          },
+          "core": {
+            "type": "string",
+            "title": "Core",
+            "description": "Core system version"
+          },
+          "pico": {
+            "type": "string",
+            "title": "Pico",
+            "description": "Pico controller version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "drive",
+          "core",
+          "pico"
+        ],
+        "title": "VersionResponse"
+      },
+      "WarningListResponse": {
+        "properties": {
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings",
+            "description": "List of system warning messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "warnings"
+        ],
+        "title": "WarningListResponse"
+      },
+      "routers__collab__Message": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "内容"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "Message"
+      },
+      "routers__control__Message": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Standard output, error message, or exception details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "Message"
+      },
+      "routers__control__Position": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X",
+            "description": "Value of x axis [m]",
+            "default": 0.0
+          },
+          "y": {
+            "type": "number",
+            "title": "Y",
+            "description": "Value of y axis [m]",
+            "default": 0.0
+          },
+          "deg": {
+            "type": "number",
+            "title": "Deg",
+            "description": "Value of rotation around z axis [degrees]",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "Position"
+      },
+      "routers__navigation__Message": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Standard output, error message, or exception details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "Message"
+      },
+      "routers__navigation__Position": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X",
+            "description": "X軸方向の相対移動量(単位:m)",
+            "default": 0.0
+          },
+          "y": {
+            "type": "number",
+            "title": "Y",
+            "description": "Y軸方向の相対移動量(単位:m)",
+            "default": 0.0
+          },
+          "deg": {
+            "type": "number",
+            "title": "Deg",
+            "description": "回転角度(単位:度)",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "title": "Position"
+      },
+      "routers__system__Message": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "description": "Standard output, error message, or exception details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "Message"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "system",
+      "description": "\n## システム情報\nAMRの設定やシステム全体の状態を取得・管理するAPI群\n            "
+    },
+    {
+      "name": "status",
+      "description": "\n## ステータス情報\nAMRプログラムの状態を取得・管理するAPI群\n            "
+    },
+    {
+      "name": "vslam",
+      "description": "\n## 自己位置推定関連\nSLAMに関する状態を取得・管理するAPI群\n            "
+    },
+    {
+      "name": "control",
+      "description": "\n## AMRを直接制御する\nAMRを直接制御するため（励磁ON/OFF、相対移動など）のAPI群\n            "
+    },
+    {
+      "name": "collab",
+      "description": "\n## 協調状態や協調移動を制御する\n複数AMR間の協調状態を取得・管理、協調関連の直接制御を行うAPI群\n            "
+    },
+    {
+      "name": "navigation",
+      "description": "\n## 自律移動関連\n目的地への移動やオペレーションの実行などを指示・管理するAPI群\n            "
+    }
+  ]
+}
