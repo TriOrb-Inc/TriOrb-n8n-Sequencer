@@ -37,11 +37,17 @@ TriOrb AMR（BISON 1.2.3）のAPIを利用して、n8n上でシーケンス制�
    docker compose up -d
    ```
 
-5. ブラウザで n8n にアクセスします。
+5. 設定を反映するため、Docker Compose環境を再起動します。
+
+   ```bash
+   docker compose restart
+   ```
+
+6. ブラウザで n8n にアクセスします。
    
    - http://localhost:5678
 
-6. AMR API 連携のためのフローは `Agent.md` の例を参照してください（AMRのIPはn8nのダッシュボード側で追加します）。
+7. AMR API 連携のためのフローは `Agent.md` の例を参照してください（AMRのIPはn8nのダッシュボード側で追加します）。
 
 ## ディレクトリ構成（想定）
 
