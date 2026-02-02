@@ -1,2 +1,60 @@
 # TriOrb-n8n-Sequencer
-AMRの複数タスク実行などシーケンス制御するための環境
+
+TriOrb AMR（BISON 1.2.3）のAPIを利用して、n8n上でシーケンス制御（複数タスク実行など）を行う環境を構築するためのリポジトリです。
+
+- AMR API ドキュメント: https://triorb-inc.github.io/TriOrb-AMR-Robot-Controller/bison1.2.3/
+
+## 前提条件
+
+- Windows 11/10 + WSL2（Ubuntu）
+- Docker Desktop（WSL2統合が有効）
+- Git
+
+## セットアップ手順（WSL Ubuntu + Docker）
+
+1. リポジトリを取得します。
+   
+   ```bash
+   git clone <このリポジトリのURL>
+   cd TriOrb-n8n-Sequencer
+   ```
+
+2. WSL Ubuntu上でDockerが利用できることを確認します。
+   
+   ```bash
+   docker version
+   ```
+
+3. .env の作成（必要に応じて変更）
+   
+   ```bash
+   cp .env.example .env
+   ```
+
+4. n8n を起動します。
+   
+   ```bash
+   docker compose up -d
+   ```
+
+5. ブラウザで n8n にアクセスします。
+   
+   - http://localhost:5678
+
+6. AMR API 連携のためのフローは `Agent.md` の例を参照してください。
+
+## ディレクトリ構成（想定）
+
+```
+.
+├── README.md
+├── Agent.md
+├── docker-compose.yml
+├── .env.example
+└── workflows/
+```
+
+## 補足
+
+- APIの認証やエンドポイントは、AMRコントローラ側の設定に合わせて変更してください。
+- n8nの環境変数は `.env` で管理します。
