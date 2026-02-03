@@ -2,56 +2,28 @@
   "name": "Collab Workflow Sample",
   "nodes": [
     {
-      "parameters": {
-        "inputFields": {
-          "string": [
-            {
-              "name": "IP_robot01",
-              "defaultValue": "192.168.8.101"
-            },
-            {
-              "name": "IP_robot02",
-              "defaultValue": "192.168.8.102"
-            },
-            {
-              "name": "Collab_name",
-              "defaultValue": "collab01"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -960,
-        -240
-      ],
-      "id": "1",
-      "name": "Manual Trigger Input Form"
-    },
-    {
-      "parameters": {
-        "jsCode": "const data = $getWorkflowStaticData('global');\n\nconst defaults = {\n  IP_robot01: '192.168.8.101',\n  IP_robot02: '192.168.8.102',\n  Collab_name: 'collab01',\n};\n\nconst inputValues = {\n  IP_robot01: $json.IP_robot01 ?? defaults.IP_robot01,\n  IP_robot02: $json.IP_robot02 ?? defaults.IP_robot02,\n  Collab_name: $json.Collab_name ?? defaults.Collab_name,\n};\n\ndata.collabInputs = inputValues;\n\nreturn [{ json: inputValues }];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -720,
-        -240
-      ],
-      "id": "2",
-      "name": "Save Inputs"
-    },
-    {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -960,
-        160
+        240,
+        0
       ],
-      "id": "3",
-      "name": "Manual Trigger Run"
+      "id": "21403a20-d15b-4595-a1c1-ddcd2a46742c",
+      "name": "Manual Trigger Input Form"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $getWorkflowStaticData('global');\n\nconst defaults = {\n  IP_robot01: '192.168.8.104',\n  IP_robot02: '192.168.8.106',\n  Collab_name: 'collab01',\n};\n\nconst inputValues = {\n  IP_robot01: $json.IP_robot01 ?? defaults.IP_robot01,\n  IP_robot02: $json.IP_robot02 ?? defaults.IP_robot02,\n  Collab_name: $json.Collab_name ?? defaults.Collab_name,\n};\n\ndata.collabInputs = inputValues;\n\nreturn [{ json: inputValues }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "id": "fbc56427-051e-4cfa-8b24-b8644f78b11e",
+      "name": "Save Inputs"
     },
     {
       "parameters": {
@@ -60,113 +32,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -720,
-        160
+        240,
+        400
       ],
-      "id": "4",
+      "id": "86fb320b-105d-4f31-93c9-62e9138834f0",
       "name": "Load Inputs"
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "ip",
-              "value": "={{ $json.IP_robot01 }}"
-            },
-            {
-              "name": "robot_label",
-              "value": "robot01"
-            },
-            {
-              "name": "IP_robot01",
-              "value": "={{ $json.IP_robot01 }}"
-            },
-            {
-              "name": "IP_robot02",
-              "value": "={{ $json.IP_robot02 }}"
-            },
-            {
-              "name": "Collab_name",
-              "value": "={{ $json.Collab_name }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        -480,
-        40
-      ],
-      "id": "5",
-      "name": "Set Robot01"
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "ip",
-              "value": "={{ $json.IP_robot02 }}"
-            },
-            {
-              "name": "robot_label",
-              "value": "robot02"
-            },
-            {
-              "name": "IP_robot01",
-              "value": "={{ $json.IP_robot01 }}"
-            },
-            {
-              "name": "IP_robot02",
-              "value": "={{ $json.IP_robot02 }}"
-            },
-            {
-              "name": "Collab_name",
-              "value": "={{ $json.Collab_name }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        -480,
-        280
-      ],
-      "id": "6",
-      "name": "Set Robot02"
-    },
-    {
-      "parameters": {
-        "url": "=http://{{ $json.ip }}:8080/status/robot/status",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        -240,
-        40
-      ],
-      "id": "7",
-      "name": "Robot01 Status"
-    },
-    {
-      "parameters": {
-        "url": "=http://{{ $json.ip }}:8080/status/robot/status",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        -240,
-        280
-      ],
-      "id": "8",
-      "name": "Robot02 Status"
     },
     {
       "parameters": {
@@ -177,15 +47,16 @@
               "operation": "isTrue"
             }
           ]
-        }
+        },
+        "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -40,
-        40
+        688,
+        288
       ],
-      "id": "9",
+      "id": "43a42c4e-4375-4e0a-bdbe-980c1c390e29",
       "name": "Robot01 Status OK"
     },
     {
@@ -197,221 +68,67 @@
               "operation": "isTrue"
             }
           ]
-        }
+        },
+        "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -40,
-        280
+        688,
+        528
       ],
-      "id": "10",
+      "id": "47b38eba-8d5a-43a4-b388-64dbd77b94a2",
       "name": "Robot02 Status OK"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=http://{{ $json.ip }}:8080/navigation/task/execute",
+        "url": "=http://{{ $('Load Inputs').item.json.IP_robot01 }}:8080/navigation/task/execute",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"task_name\": \"SampleTask01\",\n  \"ratio_speed\": 1,\n  \"bias_accuracy_xy\": 0,\n  \"bias_accuracy_deg\": 0,\n  \"execute_count\": 1\n}",
+        "jsonBody": "={\n  \"task_name\": \"n8n_sample_task_01\",\n  \"ratio_speed\": 1,\n  \"bias_accuracy_xy\": 0,\n  \"bias_accuracy_deg\": 0,\n  \"execute_count\": 1\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        180,
-        40
+        944,
+        272
       ],
-      "id": "11",
+      "id": "c611fc82-8579-4658-bae7-e8f9723f621b",
       "name": "Robot01 Execute Task"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=http://{{ $json.ip }}:8080/navigation/task/execute",
+        "url": "=http://{{ $('Load Inputs').item.json.IP_robot02 }}:8080/navigation/task/execute",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"task_name\": \"SampleTask01\",\n  \"ratio_speed\": 1,\n  \"bias_accuracy_xy\": 0,\n  \"bias_accuracy_deg\": 0,\n  \"execute_count\": 1\n}",
+        "jsonBody": "={\n  \"task_name\": \"n8n_sample_task_01\",\n  \"ratio_speed\": 1,\n  \"bias_accuracy_xy\": 0,\n  \"bias_accuracy_deg\": 0,\n  \"execute_count\": 1\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        180,
-        280
+        944,
+        512
       ],
-      "id": "12",
+      "id": "0162e860-3a82-4589-90fe-6d780abc8361",
       "name": "Robot02 Execute Task"
     },
     {
       "parameters": {
-        "url": "=http://{{ $json.ip }}:8080/navigation/task/result",
+        "mode": "mergeByIndex",
         "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        420,
-        40
-      ],
-      "id": "13",
-      "name": "Robot01 Task Result"
-    },
-    {
-      "parameters": {
-        "url": "=http://{{ $json.ip }}:8080/navigation/task/result",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        420,
-        280
-      ],
-      "id": "14",
-      "name": "Robot02 Task Result"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.result }}",
-              "operation": "equals",
-              "value2": "SUCCESS"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        640,
-        40
-      ],
-      "id": "15",
-      "name": "Robot01 Task Success"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.result }}",
-              "operation": "equals",
-              "value2": "SUCCESS"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        640,
-        280
-      ],
-      "id": "16",
-      "name": "Robot02 Task Success"
-    },
-    {
-      "parameters": {
-        "amount": 5,
-        "unit": "seconds"
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
-      "position": [
-        860,
-        120
-      ],
-      "id": "17",
-      "name": "Wait Robot01 Task"
-    },
-    {
-      "parameters": {
-        "amount": 5,
-        "unit": "seconds"
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
-      "position": [
-        860,
-        360
-      ],
-      "id": "18",
-      "name": "Wait Robot02 Task"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        860,
-        40
-      ],
-      "id": "19",
-      "name": "Robot01 Completed"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        860,
-        280
-      ],
-      "id": "20",
-      "name": "Robot02 Completed"
-    },
-    {
-      "parameters": {
-        "mode": "mergeByIndex"
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        1080,
-        160
+        1408,
+        400
       ],
-      "id": "21",
+      "id": "08e9699d-51e8-493a-8ac5-fcbd9ef5c6b7",
       "name": "Both Robots Completed"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=http://{{ $json.IP_robot01 }}:8080/collab/group_create",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"group_name\": \"{{ $json.Collab_name }}\",\n  \"robots\": \"{{ $json.IP_robot01 }},{{ $json.IP_robot02 }}\",\n  \"master\": \"{{ $json.IP_robot01 }}\"\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        1300,
-        160
-      ],
-      "id": "22",
-      "name": "Collab Group Create"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=http://{{ $json.IP_robot01 }}:8080/collab/group_bind",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"group_name\": \"{{ $json.Collab_name }}\",\n  \"master\": \"{{ $json.IP_robot01 }}\",\n  \"robots\": [\n    {\n      \"ip\": \"{{ $json.IP_robot01 }}\",\n      \"dx\": 0,\n      \"dy\": 1.21,\n      \"dw\": 0\n    },\n    {\n      \"ip\": \"{{ $json.IP_robot02 }}\",\n      \"dx\": 0,\n      \"dy\": -1.21,\n      \"dw\": 180\n    }\n  ]\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        1520,
-        160
-      ],
-      "id": "23",
-      "name": "Collab Group Bind"
     },
     {
       "parameters": {
@@ -425,10 +142,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1740,
-        160
+        1856,
+        400
       ],
-      "id": "24",
+      "id": "b84b941c-fb44-49f2-8673-96becd6d3cbb",
       "name": "Collab Run Lifter"
     },
     {
@@ -439,10 +156,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1960,
-        160
+        2080,
+        400
       ],
-      "id": "25",
+      "id": "c49f9be1-22c7-4ccc-97e4-bc58bcdc55b1",
       "name": "Lifter Result"
     },
     {
@@ -455,15 +172,16 @@
               "value2": "No result available"
             }
           ]
-        }
+        },
+        "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        2180,
-        160
+        2304,
+        400
       ],
-      "id": "26",
+      "id": "d7d8dd12-28f7-4347-a0f0-6a6fce17fcc6",
       "name": "Lifter Result Ready"
     },
     {
@@ -474,11 +192,12 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        2400,
-        240
+        2512,
+        480
       ],
-      "id": "27",
-      "name": "Wait Lifter Result"
+      "id": "fc46831a-60b3-40a9-976d-cfb5f9482b3e",
+      "name": "Wait Lifter Result",
+      "webhookId": "68ad76ae-9b3d-4d6b-b5b2-bba5620b4ac1"
     },
     {
       "parameters": {
@@ -499,11 +218,294 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2400,
-        80
+        2512,
+        304
       ],
-      "id": "28",
+      "id": "26769dcb-b56d-40bd-9c89-b349c9ece907",
       "name": "Show Lifter Result"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "9RV2YQJd6rkUyiX1",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/9RV2YQJd6rkUyiX1",
+          "cachedResultName": "Check Robot01"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "IP_robot01": "={{ $json.IP_robot01 }}",
+            "IP_robot02": "={{ $json.IP_robot02 }}",
+            "Collab_name": "={{ $json.Collab_name }}"
+          },
+          "matchingColumns": [
+            "IP_robot01",
+            "IP_robot02",
+            "Collab_name"
+          ],
+          "schema": [
+            {
+              "id": "IP_robot01",
+              "displayName": "IP_robot01",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "IP_robot02",
+              "displayName": "IP_robot02",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Collab_name",
+              "displayName": "Collab_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        288
+      ],
+      "name": "Call Check Robot01",
+      "id": "900ab1f8-ce76-445c-a61e-a522524cfb78"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "sUIJBxzgIA2IzCJ2",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "IP_robot02": "={{ $json.IP_robot02 }}",
+            "IP_robot01": "={{ $json.IP_robot01 }}",
+            "Collab_name": "={{ $json.Collab_name }}"
+          },
+          "matchingColumns": [
+            "IP_robot02",
+            "IP_robot01",
+            "Collab_name"
+          ],
+          "schema": [
+            {
+              "id": "IP_robot02",
+              "displayName": "IP_robot02",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "IP_robot01",
+              "displayName": "IP_robot01",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Collab_name",
+              "displayName": "Collab_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        496,
+        528
+      ],
+      "name": "Call Check Robot02",
+      "id": "c1430006-8cef-477c-b432-ba87d5b72a09"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "aedIgeLcXuVL4wbW",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/aedIgeLcXuVL4wbW",
+          "cachedResultName": "単体タスク実行完了待ち"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ip": "={{ $('Load Inputs').item.json.IP_robot01 }}"
+          },
+          "matchingColumns": [
+            "ip"
+          ],
+          "schema": [
+            {
+              "id": "ip",
+              "displayName": "ip",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        272
+      ],
+      "name": "R01単体タスク01実行完了待ち",
+      "id": "5a99502a-6295-4700-a743-5cf6f3ec940b"
+    },
+    {
+      "parameters": {
+        "content": "## 環境変数設定\n- Robot IP\n- Collab Name",
+        "height": 112
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -128
+      ],
+      "id": "b2788f56-f8db-45a9-a019-fb91564ba75f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://{{ $('Load Inputs').item.json.IP_robot01 }}:8080/collab/group_create",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"group_name\": \"{{ $('Load Inputs').item.json.IP_robot01 }}\",\n  \"robots\": \"{{ $('Load Inputs').item.json.IP_robot01 }},{{ $('Load Inputs').item.json.IP_robot02 }}\",\n  \"master\": \"{{ $('Load Inputs').item.json.IP_robot01 }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1632,
+        0
+      ],
+      "id": "ffe8b8df-3e6a-4406-b9dc-831428773c6b",
+      "name": "Collab Group Create"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://{{ $('Load Inputs').item.json.IP_robot01 }}:8080/collab/group_bind",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"group_name\": \"{{ $('Load Inputs').item.json.Collab_name }}\",\n  \"master\": \"{{ $('Load Inputs').item.json.IP_robot01 }}\",\n  \"robots\": [\n    {\n      \"ip\": \"{{ $('Load Inputs').item.json.IP_robot01 }}\",\n      \"dx\": 0,\n      \"dy\": 1.21,\n      \"dw\": 0\n    },\n    {\n      \"ip\": \"{{ $('Load Inputs').item.json.IP_robot02 }}\",\n      \"dx\": 0,\n      \"dy\": -1.21,\n      \"dw\": 180\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1840,
+        0
+      ],
+      "id": "49abece8-827b-4c8a-bba7-9d23da321f76",
+      "name": "Collab Group Bind"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1e58392-18dc-4324-9c8c-b2a91651080e",
+              "name": "IP_robot01",
+              "value": "={{ $json.IP_robot01 }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2048,
+        0
+      ],
+      "id": "15ea44c3-6c9a-448e-b0f2-4aaac7db64f1",
+      "name": "Return"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "aedIgeLcXuVL4wbW",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/aedIgeLcXuVL4wbW",
+          "cachedResultName": "単体タスク実行完了待ち"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ip": "={{ $('Load Inputs').item.json.IP_robot02 }}"
+          },
+          "matchingColumns": [
+            "ip"
+          ],
+          "schema": [
+            {
+              "id": "ip",
+              "displayName": "ip",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        512
+      ],
+      "name": "R01単体タスク01実行完了待ち1",
+      "id": "2ce39d9e-66a0-491a-bd63-2179dff168eb"
     }
   ],
   "pinData": {},
@@ -519,71 +521,16 @@
         ]
       ]
     },
-    "Manual Trigger Run": {
-      "main": [
-        [
-          {
-            "node": "Load Inputs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Load Inputs": {
       "main": [
         [
           {
-            "node": "Set Robot01",
+            "node": "Call Check Robot01",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Set Robot02",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Robot01": {
-      "main": [
-        [
-          {
-            "node": "Robot01 Status",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Robot02": {
-      "main": [
-        [
-          {
-            "node": "Robot02 Status",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot01 Status": {
-      "main": [
-        [
-          {
-            "node": "Robot01 Status OK",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot02 Status": {
-      "main": [
-        [
-          {
-            "node": "Robot02 Status OK",
+            "node": "Call Check Robot02",
             "type": "main",
             "index": 0
           }
@@ -598,8 +545,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Robot02 Status OK": {
@@ -610,15 +556,14 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Robot01 Execute Task": {
       "main": [
         [
           {
-            "node": "Robot01 Task Result",
+            "node": "R01単体タスク01実行完了待ち",
             "type": "main",
             "index": 0
           }
@@ -629,111 +574,9 @@
       "main": [
         [
           {
-            "node": "Robot02 Task Result",
+            "node": "R01単体タスク01実行完了待ち1",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot01 Task Result": {
-      "main": [
-        [
-          {
-            "node": "Robot01 Task Success",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot02 Task Result": {
-      "main": [
-        [
-          {
-            "node": "Robot02 Task Success",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot01 Task Success": {
-      "main": [
-        [
-          {
-            "node": "Robot01 Completed",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Wait Robot01 Task",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot02 Task Success": {
-      "main": [
-        [
-          {
-            "node": "Robot02 Completed",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Wait Robot02 Task",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait Robot01 Task": {
-      "main": [
-        [
-          {
-            "node": "Robot01 Task Result",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait Robot02 Task": {
-      "main": [
-        [
-          {
-            "node": "Robot02 Task Result",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot01 Completed": {
-      "main": [
-        [
-          {
-            "node": "Both Robots Completed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Robot02 Completed": {
-      "main": [
-        [
-          {
-            "node": "Both Robots Completed",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -743,28 +586,6 @@
         [
           {
             "node": "Collab Group Create",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Collab Group Create": {
-      "main": [
-        [
-          {
-            "node": "Collab Group Bind",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Collab Group Bind": {
-      "main": [
-        [
-          {
-            "node": "Collab Run Lifter",
             "type": "main",
             "index": 0
           }
@@ -821,6 +642,94 @@
           }
         ]
       ]
+    },
+    "Call Check Robot01": {
+      "main": [
+        [
+          {
+            "node": "Robot01 Status OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Check Robot02": {
+      "main": [
+        [
+          {
+            "node": "Robot02 Status OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R01単体タスク01実行完了待ち": {
+      "main": [
+        [
+          {
+            "node": "Both Robots Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Inputs": {
+      "main": [
+        [
+          {
+            "node": "Load Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collab Group Create": {
+      "main": [
+        [
+          {
+            "node": "Collab Group Bind",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collab Group Bind": {
+      "main": [
+        [
+          {
+            "node": "Return",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return": {
+      "main": [
+        [
+          {
+            "node": "Collab Run Lifter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "R01単体タスク01実行完了待ち1": {
+      "main": [
+        [
+          {
+            "node": "Both Robots Completed",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -828,10 +737,10 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "collab-001",
+  "versionId": "dfaad8a8-34b9-4ae6-8c05-5ba09486ca2a",
   "meta": {
-    "instanceId": "collab-sample"
+    "instanceId": "5e5e8c4e18a7e7ddef7816e91f7e4b1181d780c5c6c079149d64d7aa6a5464e5"
   },
-  "id": "collab_001",
+  "id": "Th9c6102ng2Z843arF0Pd",
   "tags": []
 }
