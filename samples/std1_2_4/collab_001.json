@@ -1,174 +1,54 @@
 {
-  "name": "Collab Workflow Sample",
+  "name": "20260205_Test",
   "nodes": [
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -640,
-        496
+        -1520,
+        336
       ],
-      "id": "21403a20-d15b-4595-a1c1-ddcd2a46742c",
+      "id": "f22cdd61-3d81-4a2e-acb2-17ab60bd1781",
       "name": "Manual Trigger Input Form"
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "return {\n  \"task_name\": \"n8n_sample_std_task_01\",\n  \"ratio_speed\": 1,\n  \"bias_accuracy_xy\": 0,\n  \"bias_accuracy_deg\": 0,\n  \"execute_count\": 1\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        80,
-        496
-      ],
-      "id": "7684727f-4b13-470f-8e78-de164d8aefe3",
-      "name": "単体Task01"
-    },
-    {
-      "parameters": {
-        "jsCode": "return {\n  \"group_name\": \"collab999\",\n  \"master\": \"192.168.25.79\",\n  \"robots\": [\n    {\n      \"ip\": \"192.168.25.79\",\n      \"dx\": 0,\n      \"dy\": 1,\n      \"dw\": 0\n    },\n    {\n      \"ip\": \"192.168.25.76\",\n      \"dx\": 0,\n      \"dy\": -1,\n      \"dw\": 180\n    }\n  ]\n}"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -432,
-        496
-      ],
-      "id": "f5f74712-f404-4503-ae80-fbe76f55a067",
-      "name": "ロボット情報（協調含む）"
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "robots",
+        "mode": "raw",
+        "jsonOutput": "={\n  \"tasks\": [\n    {\n      \"ip\":\"{{ $json.ip_01 }}\",\n      \"task_name\": \"20260205_Test_単独自律（Lift地点まで）\",\n      \"ratio_speed\": 1,\n      \"bias_accuracy_xy\": 0,\n      \"bias_accuracy_deg\": 0,\n      \"execute_count\": 1\n    },\n    {\n      \"ip\":\"{{ $json.ip_02 }}\",\n      \"task_name\": \"20260205_Test_単独自律（Lift地点まで）\",\n      \"ratio_speed\": 1,\n      \"bias_accuracy_xy\": 0,\n      \"bias_accuracy_deg\": 0,\n      \"execute_count\": 1\n    }\n  ]\n} ",
         "options": {}
       },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        -272,
-        496
+        -896,
+        336
       ],
-      "id": "83555306-a81b-49e1-857f-07595087943c",
-      "name": "Split Out"
+      "id": "2a3a84b7-beb5-4446-bcfa-cd0f268cea2e",
+      "name": "単体Task01",
+      "executeOnce": true
     },
     {
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "WFdHK5rx2fKF3HMO",
-          "mode": "list"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ip": "={{ $json.ip }}"
-          },
-          "matchingColumns": [
-            "ip"
-          ],
-          "schema": [
-            {
-              "id": "ip",
-              "displayName": "ip",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        -96,
-        496
-      ],
-      "name": "Call ロボット存在確認＆協調解除",
-      "id": "db2ae39b-7169-4eca-8371-cefdecf44fb9"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "CICVepjbqR4oOiow",
+          "value": "6CkvYQP4614XQ1Lx",
           "mode": "list",
-          "cachedResultUrl": "/workflow/CICVepjbqR4oOiow",
-          "cachedResultName": "タスク実行（完了同期待ち）"
+          "cachedResultUrl": "/workflow/6CkvYQP4614XQ1Lx",
+          "cachedResultName": "協調解除"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "bias_accuracy_deg": "={{ $json.bias_accuracy_deg }}",
-            "bias_accuracy_xy": "={{ $json.bias_accuracy_xy }}",
-            "execute_count": "={{ $json.execute_count }}",
-            "ratio_speed": "={{ $json.ratio_speed }}",
-            "task_name": "={{ $json.task_name }}",
-            "Robots": "={{ $('Split Out').item.json.ip }}"
+            "tasks": "={{ $json.tasks }}"
           },
           "matchingColumns": [
-            "Robots",
-            "bias_accuracy_deg",
-            "bias_accuracy_xy",
-            "execute_count",
-            "ratio_speed",
-            "task_name"
+            "tasks"
           ],
           "schema": [
             {
-              "id": "Robots",
-              "displayName": "Robots",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "bias_accuracy_deg",
-              "displayName": "bias_accuracy_deg",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "bias_accuracy_xy",
-              "displayName": "bias_accuracy_xy",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "execute_count",
-              "displayName": "execute_count",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "ratio_speed",
-              "displayName": "ratio_speed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "task_name",
-              "displayName": "task_name",
+              "id": "tasks",
+              "displayName": "tasks",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -179,136 +59,199 @@
           "attemptToConvertTypes": false,
           "convertFieldsToString": true
         },
-        "options": {}
+        "options": {
+          "waitForSubWorkflow": true
+        }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        256,
-        496
+        -640,
+        112
       ],
-      "name": "タスク実行（完了同期待ち）",
-      "id": "c58da349-cd7b-4734-b51c-20bf4319f419"
+      "name": "Call 協調解除",
+      "id": "09e3750a-8d3a-409c-b2d8-f2f9e60d8081"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "43lg4zoyz4W0L8un",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/43lg4zoyz4W0L8un",
+          "cachedResultName": "タスク実行"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tasks": "={{ $json.tasks }}"
+          },
+          "matchingColumns": [
+            "tasks"
+          ],
+          "schema": [
+            {
+              "id": "tasks",
+              "displayName": "tasks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        336
+      ],
+      "name": "Call タスク実行",
+      "id": "2eb81089-4d37-41d5-9596-a254afa74ef9",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f121bdf-e97a-4d24-8a47-e244e92402cc",
+              "name": "ip_01",
+              "value": "192.168.24.246",
+              "type": "string"
+            },
+            {
+              "id": "905ec3d1-c892-44af-b517-cc26fa74d839",
+              "name": "ip_02",
+              "value": "192.168.24.234",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1328,
+        336
+      ],
+      "id": "ccc68849-a275-42af-b268-bb0f0092e460",
+      "name": "Robots",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"group_name\": \"collab99\",\n  \"master\": \"{{ $json.ip_01 }}\",\n  \"robots\": [\n    {\n      \"ip\": \"{{ $json.ip_01 }}\",\n      \"dx\": 0,\n      \"dy\": 1.21,\n      \"dw\": 0\n    },\n    {\n      \"ip\": \"{{ $json.ip_02 }}\",\n      \"dx\": 0,\n      \"dy\": -1.21,\n      \"dw\": 180\n    }\n  ]\n}",
+        "includeOtherFields": true,
+        "include": "selected",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1056,
+        544
+      ],
+      "id": "205f19f4-d5b3-42e0-a7ed-15a9305455a7",
+      "name": "Bind情報",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"tasks\": [\n    {\n      \"ip\":\"{{ $json.master }}\",\n      \"task_name\": \"20260205_Test_自律協調_AtoB\",\n      \"ratio_speed\": 1,\n      \"bias_accuracy_xy\": 0,\n      \"bias_accuracy_deg\": 0,\n      \"execute_count\": 1\n    }\n  ]\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        752
+      ],
+      "id": "085fa506-98b8-4cb0-aefc-c1e548f06771",
+      "name": "協調Task",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f121bdf-e97a-4d24-8a47-e244e92402cc",
+              "name": "ip_01",
+              "value": "192.168.25.79",
+              "type": "string"
+            },
+            {
+              "id": "905ec3d1-c892-44af-b517-cc26fa74d839",
+              "name": "ip_02",
+              "value": "192.168.25.76",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1328,
+        544
+      ],
+      "id": "df7dfe2a-3b4e-427c-b602-bc1145c4c9e2",
+      "name": "Robots1",
+      "executeOnce": true
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=http://{{ $('ロボット情報（協調含む）').item.json.master }}:8080/collab/group_create_and_bind",
+        "url": "=http://{{ $json.master }}:8080/collab/group_create_and_bind",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ $('ロボット情報（協調含む）').item.json.toJsonString() }}",
+        "jsonBody": "={{ $json.toJsonString() }}",
         "options": {
-          "timeout": 120000
+          "timeout": 60000
         }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        448,
-        496
+        -640,
+        544
       ],
-      "id": "78a9c24c-442c-4806-9bb0-4163741c0bb2",
+      "id": "582a7195-d7f8-4202-a3ef-11e0c5bc8c1f",
       "name": "協調Create&Bind"
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "return {\n  \"task_name\": \"n8n_sample_collab_task_01\",\n  \"ratio_speed\": 1,\n  \"bias_accuracy_xy\": 0,\n  \"bias_accuracy_deg\": 0,\n  \"execute_count\": 1\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        624,
-        496
-      ],
-      "id": "879894a5-46cd-422a-94e7-73d0be9f4532",
-      "name": "協調Task01"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        1040,
-        496
-      ],
-      "id": "0d482bc6-107f-4687-beab-43aaebea9e4e",
-      "name": "Done1"
     },
     {
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "dYdd2Si4DD8whaMf",
-          "mode": "list"
+          "value": "43lg4zoyz4W0L8un",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/43lg4zoyz4W0L8un",
+          "cachedResultName": "タスク実行"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
           "value": {
-            "master": "={{ $('ロボット情報（協調含む）').item.json.master }}",
-            "bias_accuracy_deg": "={{ $json.bias_accuracy_deg }}",
-            "bias_accuracy_xy": "={{ $json.bias_accuracy_xy }}",
-            "execute_count": "={{ $json.execute_count }}",
-            "ratio_speed": "={{ $json.ratio_speed }}",
-            "task_name": "={{ $json.task_name }}"
+            "tasks": "={{ $json.tasks }}"
           },
           "matchingColumns": [
-            "master",
-            "bias_accuracy_deg",
-            "bias_accuracy_xy",
-            "execute_count",
-            "ratio_speed",
-            "task_name"
+            "tasks"
           ],
           "schema": [
             {
-              "id": "master",
-              "displayName": "master",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "bias_accuracy_deg",
-              "displayName": "bias_accuracy_deg",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "bias_accuracy_xy",
-              "displayName": "bias_accuracy_xy",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "execute_count",
-              "displayName": "execute_count",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "ratio_speed",
-              "displayName": "ratio_speed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "task_name",
-              "displayName": "task_name",
+              "id": "tasks",
+              "displayName": "tasks",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -319,16 +262,19 @@
           "attemptToConvertTypes": false,
           "convertFieldsToString": true
         },
-        "options": {}
+        "options": {
+          "waitForSubWorkflow": true
+        }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        848,
-        496
+        -640,
+        752
       ],
-      "name": "協調タスク実行",
-      "id": "8c42e11c-7a72-405b-a0d2-620041adf60d"
+      "name": "Call タスク実行1",
+      "id": "539603c9-69cc-47fe-ab1e-51b778ceae1d",
+      "alwaysOutputData": false
     }
   ],
   "pinData": {},
@@ -337,7 +283,12 @@
       "main": [
         [
           {
-            "node": "ロボット情報（協調含む）",
+            "node": "Robots",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Robots1",
             "type": "main",
             "index": 0
           }
@@ -348,88 +299,85 @@
       "main": [
         [
           {
-            "node": "タスク実行（完了同期待ち）",
+            "node": "Call 協調解除",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call タスク実行",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "ロボット情報（協調含む）": {
+    "Call 協調解除": {
       "main": [
         [
           {
-            "node": "Split Out",
+            "node": "Call タスク実行",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Split Out": {
+    "Call タスク実行": {
       "main": [
-        [
-          {
-            "node": "Call ロボット存在確認＆協調解除",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
-    "Call ロボット存在確認＆協調解除": {
+    "Robots": {
       "main": [
         [
           {
             "node": "単体Task01",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Bind情報",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
     },
-    "タスク実行（完了同期待ち）": {
+    "Bind情報": {
       "main": [
         [
           {
             "node": "協調Create&Bind",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "協調Task",
+            "type": "main",
+            "index": 0
           }
         ]
+      ]
+    },
+    "協調Task": {
+      "main": [
+        [
+          {
+            "node": "Call タスク実行1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Robots1": {
+      "main": [
+        []
       ]
     },
     "協調Create&Bind": {
       "main": [
-        [
-          {
-            "node": "協調Task01",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "協調Task01": {
-      "main": [
-        [
-          {
-            "node": "協調タスク実行",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "協調タスク実行": {
-      "main": [
-        [
-          {
-            "node": "Done1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -438,10 +386,11 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "d940b8d7-45cd-42ab-83c3-fbc1262428c3",
+  "versionId": "5adec56a-7798-46ba-8a90-4e8c95ba2a58",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "5e5e8c4e18a7e7ddef7816e91f7e4b1181d780c5c6c079149d64d7aa6a5464e5"
   },
-  "id": "Th9c6102ng2Z843arF0Pd",
+  "id": "HncYIawOEgKe9USH",
   "tags": []
 }
