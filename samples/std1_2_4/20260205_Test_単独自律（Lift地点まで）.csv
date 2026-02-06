@@ -1,0 +1,8 @@
+﻿type,name,action,x,y,w,vxy,vw,acc_xy,acc_w,gain,accel_ms,camera
+===,route,Start,,,,,,,,,,
+ERRORリセット,ERR Reset,,,,,,,,,,,
+地図切替,地図切替,20260205_tobeta.sqlite3,,,,,,,,,,
+point,コタツ前,Move,1.2835,-3.8991,119.35,0.5,3.141,0.05,1,1,1000,1|1|1|1
+relative,潜り込み,Move,1.5,0,0,0.167,1.047,,,,1000,
+point,リフト地点,Move,0.5355,-5.1467,121.735,0.055,0.349,0.005,0.25,2,1000,1|1|1|1
+===,route,End,,,,,,,,,,
